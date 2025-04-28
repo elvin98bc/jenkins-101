@@ -2,8 +2,8 @@ pipeline {
     agent { 
         node {
             label 'docker-agent-python'
-            }
-      }
+        }
+    }
     triggers {
         pollSCM '* * * * *'
     }
@@ -12,10 +12,18 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
+                # Check python and pip versions
+                python3 --version
                 pip3 --version
-                python --version
-                cd myapp
-                pip install -r requirements.txt
+                
+                # Create a virtual environment
+                python3 -m venv venv
+                
+                # Activate the virtual environment
+                . venv/bin/activate
+                
+                # Install dependencies inside the virtual environment
+                pip install -r myapp/requirements.txt
                 '''
             }
         }
@@ -23,8 +31,12 @@ pipeline {
             steps {
                 echo "Testing.."
                 sh '''
-                python3 hello.py
-                python3 hello.py --name=Elvin
+                # Activate virtual environment
+                . venv/bin/activate
+                
+                # Run tests
+                python3 myapp/hello.py
+                python3 myapp/hello.py --name=Elvin
                 '''
             }
         }
@@ -38,43 +50,3 @@ pipeline {
         }
     }
 }
-
-// pipeline {
-//     agent { 
-//         node {
-//             label 'docker-agent-python'
-//             }
-//       }
-//     triggers {
-//         pollSCM '* * * * *'
-//     }
-//     stages {
-//         stage('Build') {
-//             steps {
-//                 echo "Building.."
-//                 sh '''
-//                 cd myapp
-//                 pip install -r requirements.txt
-//                 '''
-//             }
-//         }
-//         stage('Test') {
-//             steps {
-//                 echo "Testing.."
-//                 sh '''
-//                 cd myapp
-//                 python3 hello.py
-//                 python3 hello.py --name=Brad
-//                 '''
-//             }
-//         }
-//         stage('Deliver') {
-//             steps {
-//                 echo 'Deliver....'
-//                 sh '''
-//                 echo "doing delivery stuff.."
-//                 '''
-//             }
-//         }
-//     }
-// }
