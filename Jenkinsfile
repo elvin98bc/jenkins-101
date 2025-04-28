@@ -29,6 +29,7 @@ pipeline {
                 echo "Testing.."
                 sh '''
                 # Run tests
+                . venv/bin/activate
                 python3 myapp/hello.py
                 python3 myapp/hello.py --name=Elvin
                 '''
