@@ -12,9 +12,6 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
-                # Check python and pip versions
-                python3 --version
-                pip3 --version
                 
                 # Create a virtual environment
                 python3 -m venv venv
@@ -31,9 +28,6 @@ pipeline {
             steps {
                 echo "Testing.."
                 sh '''
-                # Activate virtual environment
-                . venv/bin/activate
-                
                 # Run tests
                 python3 myapp/hello.py
                 python3 myapp/hello.py --name=Elvin
